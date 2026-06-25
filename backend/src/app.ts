@@ -4,6 +4,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import path from 'path';
 import { errors } from 'celebrate';
+import helmet from 'helmet';
+import limiter from './middlewares/rate-limiter';
 import routes from './routes';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import errorHandler from './middlewares/error-handler';
@@ -19,6 +21,8 @@ const {
 const app = express();
 mongoose.connect(DB_ADDRESS);
 
+app.use(helmet());
+app.use(limiter);
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
